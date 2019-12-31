@@ -12,34 +12,18 @@ public class GManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI seedText;
     [SerializeField] GameObject LocationParent;
+    [SerializeField] LocationInformation LocationPanel;
+    [SerializeField] PlayerInventory player;
 
-    int seedCounter;
     int SeedCounter
     {
-        get { return seedCounter; }
+        get { return player.GetSeeds(); }
         set {
-            seedCounter = value;
-            seedText.text = "Seeds: " + seedCounter.ToString();
+            player.SetSeeds(value);
+            seedText.text = "Seeds: " + player.GetSeeds().ToString();
         }
     }
 
-    #region Testing
-
-    public GManager()
-    {
-        EditorApplication.playModeStateChanged += LogPlayModeState;
-    }
-
-
-    private void LogPlayModeState(PlayModeStateChange state)
-    {
-        if(state == PlayModeStateChange.ExitingPlayMode)
-        {
-            Debug.Log("Saving");
-            SaveData();
-        }
-    }
-    #endregion
 
     private void Awake()
     {
@@ -51,12 +35,23 @@ public class GManager : MonoBehaviour
 
     private void Start()
     {
+        SetupDataFromSave();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveData();
+    }
+
+
+    void SetupDataFromSave()
+    {
         WorldData data = SaveGameScript.LoadGame();
-        if(data != null)
+        if (data != null)
         {
             SeedCounter = data.seeds;
             int counter = 0;
-            foreach(Transform t in LocationParent.transform)
+            foreach (Transform t in LocationParent.transform)
             {
                 t.GetComponent<SpawnLocation>().Setup(Utilities.instance.GetToy(data.toys[counter]), Utilities.instance.GetFranimalByNameAndSpecies(data.franimals[counter]), System.DateTime.Parse(data.oldTime), data.timeRemaining[counter]);
                 counter += 1;
@@ -66,17 +61,10 @@ public class GManager : MonoBehaviour
         {
             SeedCounter = 0;
         }
-
-    }
-
-    private void OnApplicationQuit()
-    {
-        
     }
 
     public void AddSeedsToPlayerTotal(int seeds)
     {
-        Debug.Log(seeds);
         SeedCounter += seeds;
     }
 
@@ -94,6 +82,17 @@ public class GManager : MonoBehaviour
             timeRemaining.Add(sl.GetTimeRemaining());
         }
         SaveGameScript.SaveGame(franimal, toys, System.DateTime.Now.ToString(), timeRemaining, SeedCounter);
-        Debug.Log("Heyo");
+    }
+
+    public void LookAtLocation(Sprite toy, Sprite franimal, string toyN, string franN, SpawnLocation location)
+    {
+        PauseGame();
+        LocationPanel.LookAtInformation(toy, franimal, toyN, franN, location);
+    }
+
+
+    public void PauseGame()
+    {
+        Time.timeScale = (Time.timeScale < 1 ? 1 : 0);
     }
 }

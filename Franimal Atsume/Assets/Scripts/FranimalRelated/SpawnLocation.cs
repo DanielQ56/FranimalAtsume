@@ -17,6 +17,7 @@ public class SpawnLocation : MonoBehaviour
     float getNewFranimalTimer = 0f;
     float getNewFranimalProbability = 0.50f;
 
+    //called when loading up a save file 
     public void Setup(Toy toy, Franimal franimal, System.DateTime oldTime, float timeRemaining)
     {
         currentToy = toy;
@@ -27,9 +28,7 @@ public class SpawnLocation : MonoBehaviour
         }
         if(currentFranimal != null)
         {
-            Debug.Log(franimal.name + " " + this.gameObject.name);
             System.TimeSpan time = System.DateTime.Now - oldTime;
-            //Debug.Log(time.TotalSeconds + " " + timeRemaining);
             if(time.TotalSeconds < timeRemaining)
             {
                 activeFranimal.sprite = currentFranimal.sprite;
@@ -57,6 +56,20 @@ public class SpawnLocation : MonoBehaviour
         CheckForNewFranimal();
     }
 
+    private void OnMouseDown()
+    {
+        GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
+            (currentToy == null ? "None" : currentToy.name), (currentFranimal == null ? "None" : currentFranimal.name), this);
+    }
+
+    public void ChangeToy(Toy t)
+    {
+        ChangeToyInfo(t); 
+        GivePlayerSeeds();
+    }
+
+    #region Handles franimal arrival and departure
+    //decrement the timer/make franimal leave when its timer is done
     void DecrementCurrentFranimal()
     {
         if (currentFranimal != null)
@@ -71,6 +84,7 @@ public class SpawnLocation : MonoBehaviour
         }
     }
 
+    //uses probability to decide whether or not to spawn a new franimal at this SpawnLocation
     void CheckForNewFranimal()
     {
         if (currentToy != null)
@@ -91,6 +105,7 @@ public class SpawnLocation : MonoBehaviour
         }
     }
 
+    //Gets a new franimal to inhabit this location
     void AttractNewFranimal()
     {
         if(currentToy != null)
@@ -113,11 +128,14 @@ public class SpawnLocation : MonoBehaviour
         }
     }
 
+    //fetching the time this franimal should stay at this location
     void SetupNewFranimal()
     {
         franimalTimeRemaining = Random.Range(currentFranimal.MinDuration, currentFranimal.MaxDuration);
     }
 
+
+    //gives player seeds once the franimal leaves
     void GivePlayerSeeds(Franimal newFran = null)
     {
         if(currentFranimal != null)
@@ -126,6 +144,15 @@ public class SpawnLocation : MonoBehaviour
         activeFranimal.sprite = (newFran != null ? newFran.sprite : null);
     }
 
+    void ChangeToyInfo(Toy t)
+    {
+        currentToy = t;
+        currentToy.toySprite = (currentToy == null ? null : currentToy.toySprite);
+    }
+
+    #endregion
+
+    #region accessory function for getting info from this Spawn location
     public string GetToyName()
     {
         return currentToy.name;
@@ -143,4 +170,6 @@ public class SpawnLocation : MonoBehaviour
     {
         return franimalTimeRemaining;
     }
+
+    #endregion
 }
