@@ -9,4 +9,5 @@ public class Toy : ScriptableObject
     public Sprite toySprite;
     public AnimalSpecies attractedSpecies;
     public AnimalLocation placeableLocation;
+    public bool hasBeenPlaced = false;
 }

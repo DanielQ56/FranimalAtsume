@@ -22,7 +22,7 @@ public class PlayerInventory : MonoBehaviour
         ownedToys.Add(t);
     }
 
-    public List<Toy> GetToy(Toy t)
+    public List<Toy> GetOwnedToys()
     {
         return ownedToys;
     }

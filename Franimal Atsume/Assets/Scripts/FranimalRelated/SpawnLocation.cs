@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class SpawnLocation : MonoBehaviour
 {
-    [SerializeField] Toy currentToy;
-    [SerializeField] SpriteRenderer activeToy;
-    [SerializeField] SpriteRenderer activeFranimal;
     [SerializeField] AnimalLocation location;
 
-
+    #region Franimal Variables
+    [SerializeField] SpriteRenderer activeFranimal;
     public Franimal currentFranimal;
     float franimalTimeRemaining = 0;
-
-
     float getNewFranimalTimer = 0f;
     float getNewFranimalProbability = 0.50f;
+    #endregion
 
+    #region Startup and Pre-startup functions
     //called when loading up a save file 
     public void Setup(Toy toy, Franimal franimal, System.DateTime oldTime, float timeRemaining)
     {
@@ -56,17 +54,40 @@ public class SpawnLocation : MonoBehaviour
         CheckForNewFranimal();
     }
 
+    #endregion
+
+
+    #region Handles Clicking on a Location
     private void OnMouseDown()
     {
         GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
             (currentToy == null ? "None" : currentToy.name), (currentFranimal == null ? "None" : currentFranimal.name), this);
     }
+    #endregion
 
+    #region Toy-Specific Functions/Variables
+    [SerializeField] Toy currentToy;
+    [SerializeField] SpriteRenderer activeToy;
     public void ChangeToy(Toy t)
     {
         ChangeToyInfo(t); 
         GivePlayerSeeds();
     }
+
+    void ChangeToyInfo(Toy t)
+    {
+        if(currentToy != null)
+            currentToy.hasBeenPlaced = false;
+        currentToy = t;
+        activeToy.sprite = (currentToy == null ? null : currentToy.toySprite);
+        if (currentToy != null)
+        {
+            currentToy.hasBeenPlaced = true;
+        }
+        else
+            Debug.Log("New toy is null");
+    }
+    #endregion
 
     #region Handles franimal arrival and departure
     //decrement the timer/make franimal leave when its timer is done
@@ -89,6 +110,7 @@ public class SpawnLocation : MonoBehaviour
     {
         if (currentToy != null)
         {
+            Debug.Log("Can have new franimal");
             if (getNewFranimalTimer <= 0)
             {
                 if (Random.value < getNewFranimalProbability)
@@ -102,6 +124,10 @@ public class SpawnLocation : MonoBehaviour
             {
                 getNewFranimalTimer -= Time.deltaTime;
             }
+        }
+        else
+        {
+            Debug.Log("Cannot get new franimals");
         }
     }
 
@@ -144,18 +170,12 @@ public class SpawnLocation : MonoBehaviour
         activeFranimal.sprite = (newFran != null ? newFran.sprite : null);
     }
 
-    void ChangeToyInfo(Toy t)
-    {
-        currentToy = t;
-        currentToy.toySprite = (currentToy == null ? null : currentToy.toySprite);
-    }
-
     #endregion
 
     #region accessory function for getting info from this Spawn location
     public string GetToyName()
     {
-        return currentToy.name;
+        return (currentToy == null ? "" : currentToy.name);
     }
 
     public string GetFranimalInfo()

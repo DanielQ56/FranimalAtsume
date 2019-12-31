@@ -12,6 +12,8 @@ public class LocationInformation : MonoBehaviour
     [SerializeField] Image ToyImage;
     [SerializeField] Image FranimalImage;
 
+    SpawnLocation locationSelected;
+
     public void LookAtInformation(Sprite toy, Sprite franimal, string toyN, string franN, SpawnLocation location)
     {
         this.gameObject.SetActive(true);
@@ -20,5 +22,11 @@ public class LocationInformation : MonoBehaviour
         FranimalName.text = franN;
         ToyImage.sprite = toy;
         FranimalImage.sprite = franimal;
+        locationSelected = location;
+    }
+
+    public void UpdateToyAtLocation(Toy t)
+    {
+        locationSelected.ChangeToy(t);
     }
 }

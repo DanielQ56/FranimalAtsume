@@ -55,4 +55,13 @@ public static class SaveGameScript
             return null;
         }
     }
+
+    public static void DeleteData()
+    {
+        string p = Application.persistentDataPath + path;
+        if (File.Exists(p))
+        {
+            File.Delete(p);
+        }
+    }
 }

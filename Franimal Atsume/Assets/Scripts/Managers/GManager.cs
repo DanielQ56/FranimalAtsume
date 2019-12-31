@@ -10,21 +10,9 @@ public class GManager : MonoBehaviour
 {
     public static GManager instance = null;
 
-    [SerializeField] TextMeshProUGUI seedText;
-    [SerializeField] GameObject LocationParent;
-    [SerializeField] LocationInformation LocationPanel;
-    [SerializeField] PlayerInventory player;
-
-    int SeedCounter
-    {
-        get { return player.GetSeeds(); }
-        set {
-            player.SetSeeds(value);
-            seedText.text = "Seeds: " + player.GetSeeds().ToString();
-        }
-    }
 
 
+    #region Awake/Start Functions
     private void Awake()
     {
         if(instance == null)
@@ -35,15 +23,45 @@ public class GManager : MonoBehaviour
 
     private void Start()
     {
+        //SaveGameScript.DeleteData();
         SetupDataFromSave();
     }
+    #endregion
 
-    private void OnApplicationQuit()
+    #region Handles Player Inventory
+    [SerializeField] TextMeshProUGUI seedText;
+    [SerializeField] PlayerInventory player;
+    [SerializeField] InventoryDisplay inventory;
+
+    int SeedCounter
     {
-        SaveData();
+        get { return player.GetSeeds(); }
+        set
+        {
+            player.SetSeeds(value);
+            seedText.text = "Seeds: " + player.GetSeeds().ToString();
+        }
     }
 
 
+    public void AddSeedsToPlayerTotal(int seeds)
+    {
+        SeedCounter += seeds;
+    }
+
+    public void AddToyToInventory(Toy t)
+    {
+        player.AddToy(t);
+    }
+
+    public void DisplayInventory()
+    {
+        inventory.OpenInventory(player.GetOwnedToys());
+    }
+
+    #endregion
+
+    #region Handles save data
     void SetupDataFromSave()
     {
         WorldData data = SaveGameScript.LoadGame();
@@ -63,11 +81,6 @@ public class GManager : MonoBehaviour
         }
     }
 
-    public void AddSeedsToPlayerTotal(int seeds)
-    {
-        SeedCounter += seeds;
-    }
-
     void SaveData()
     {
         List<string> toys = new List<string>();
@@ -84,15 +97,33 @@ public class GManager : MonoBehaviour
         SaveGameScript.SaveGame(franimal, toys, System.DateTime.Now.ToString(), timeRemaining, SeedCounter);
     }
 
+
+    private void OnApplicationQuit()
+    {
+        SaveData();
+    }
+
+
+    #endregion
+
+    #region Handles Location Functions
+    [SerializeField] GameObject LocationParent;
+    [SerializeField] LocationInformation LocationPanel;
+
     public void LookAtLocation(Sprite toy, Sprite franimal, string toyN, string franN, SpawnLocation location)
     {
         PauseGame();
         LocationPanel.LookAtInformation(toy, franimal, toyN, franN, location);
     }
 
+    
 
+    #endregion
+
+    #region Utility Functions
     public void PauseGame()
     {
         Time.timeScale = (Time.timeScale < 1 ? 1 : 0);
     }
+    #endregion
 }

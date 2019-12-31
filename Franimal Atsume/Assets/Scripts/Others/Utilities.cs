@@ -96,11 +96,14 @@ public class Utilities: MonoBehaviour
 
     public Toy GetToy(string name)
     {
-        foreach(Toy t in toys)
+        if (!string.IsNullOrEmpty(name))
         {
-            if(t.name == name)
+            foreach (Toy t in toys)
             {
-                return t;
+                if (t.toy == name)
+                {
+                    return t;
+                }
             }
         }
         Debug.Log("Toy does not exist");
