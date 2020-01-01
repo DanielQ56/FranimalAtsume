@@ -11,8 +11,9 @@ public class SpawnLocation : MonoBehaviour
     [SerializeField] SpriteRenderer activeFranimal;
     public Franimal currentFranimal;
     float franimalTimeRemaining = 0;
-    float getNewFranimalTimer = 0f;
-    float getNewFranimalProbability = 1f;
+    [SerializeField] float getNewFranimalTimer = 0f;
+    [SerializeField] float getNewFranimalProbability = 0.1f;
+    [SerializeField] float franimalSpawnInterval = 10f;
     #endregion
 
     #region Startup and Pre-startup functions
@@ -49,6 +50,7 @@ public class SpawnLocation : MonoBehaviour
         {
             activeToy.sprite = currentToy.toySprite;
         }
+        getNewFranimalTimer = franimalSpawnInterval;
     }
 
     // Update is called once per frame
@@ -61,7 +63,6 @@ public class SpawnLocation : MonoBehaviour
     public void PauseTimers()
     {
         paused = !paused;
-        Debug.Log(paused ? "Paused" : "Not Paused");
     }
 
 
@@ -99,8 +100,6 @@ public class SpawnLocation : MonoBehaviour
         {
             currentToy.hasBeenPlaced = true;
         }
-        else
-            Debug.Log("New toy is null");
     }
     #endregion
 
@@ -127,12 +126,11 @@ public class SpawnLocation : MonoBehaviour
         {
             if (getNewFranimalTimer <= 0)
             {
-                Debug.Log("Here");
                 if (Random.value < getNewFranimalProbability)
                 {
                     AttractNewFranimal();
                 }
-                getNewFranimalTimer = 5f;
+                getNewFranimalTimer = franimalSpawnInterval;
 
             }
             else

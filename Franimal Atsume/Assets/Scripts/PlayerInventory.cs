@@ -59,6 +59,6 @@ public class PlayerInventory
 
     public bool HasSufficientFunds(int cost)
     {
-        return seedsOwned > cost;
+        return seedsOwned >= cost;
     }
 }

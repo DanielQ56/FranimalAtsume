@@ -10,14 +10,16 @@ public class StoreDisplay : MonoBehaviour
     [SerializeField] Button prev;
     [SerializeField] Button next;
     [SerializeField] TextMeshProUGUI description;
+    [SerializeField] TextMeshProUGUI seedsOwned;
     [SerializeField] GameObject errorPanel;
+    [SerializeField] GameObject successPanel;
 
     ToyInDisplay toy;
 
     int currentIndex = 0;
     List<Toy> unownedToys = new List<Toy>();
 
-    public void OpenStore(List<Toy> uT)
+    public void OpenStore(List<Toy> uT, int seeds)
     {
         currentIndex = 0;
         unownedToys = uT;
@@ -36,6 +38,8 @@ public class StoreDisplay : MonoBehaviour
         }
         next.interactable = (unownedToys.Count > 4);
         prev.interactable = false;
+        seedsOwned.text = string.Format("Seeds: {0}", seeds);
+        description.text = "";
     }
 
     public void NextPage()
@@ -91,6 +95,11 @@ public class StoreDisplay : MonoBehaviour
     public void DisplayErrorMessage()
     {
         errorPanel.SetActive(true);
+    }
+
+    public void DisplaySuccessPanel()
+    {
+        successPanel.SetActive(true);
     }
 
     public void CloseStore()

@@ -29,9 +29,8 @@ public class ToyInDisplay: MonoBehaviour
         {
             toyImage.sprite = t.toySprite;
             toyName.text = t.toy;
-            Debug.Log(t.hasBeenPlaced);
-            placed.SetActive(t.hasBeenPlaced);
-            button.interactable = (!t.hasBeenPlaced);
+            placed.SetActive(inShop ? t.isOwned : t.hasBeenPlaced);
+            button.interactable = (inShop ? !t.isOwned : !t.hasBeenPlaced);
             toyCost.text = (inShop ? t.cost.ToString() : "");
         }
         else
@@ -43,6 +42,7 @@ public class ToyInDisplay: MonoBehaviour
         }
         this.inShop = inShop;
         toy = t;
+        selected = false;
     }
     #endregion
 
@@ -83,7 +83,7 @@ public class ToyInDisplay: MonoBehaviour
                 if(GManager.instance.CanPurchaseToy(toy))
                 {
                     GManager.instance.AddToyToInventory(toy);
-                    storeDisplay.CloseStore();
+                    storeDisplay.DisplaySuccessPanel();
                 }
                 else
                 {
@@ -92,6 +92,7 @@ public class ToyInDisplay: MonoBehaviour
             }
         }
     }
+
 
     public void Deselect()
     {

@@ -94,11 +94,10 @@ public class Utilities: MonoBehaviour
         }
     }
 
-    public List<Toy> SeparateToys(string[] names, out List<Toy> unownedToys)
+    public List<Toy> SeparateToys(out List<Toy> unowned, string[] names = null)
     {
         List<Toy> owned = new List<Toy>();
-        List<Toy> unowned = new List<Toy>();
-        if (names.Length > 0)
+        if (names != null)
         {
             List<string> toyNames = new List<string>();
             toyNames.AddRange(names);
@@ -107,18 +106,11 @@ public class Utilities: MonoBehaviour
                 if (toyNames.Contains(t.toy))
                 {
                     owned.Add(t);
-                }
-                else
-                {
-                    unowned.Add(t);
+                    t.isOwned = true;
                 }
             }
         }
-        else
-        {
-            unowned.AddRange(toys);
-        }
-        unownedToys = unowned;
+        unowned = toys;
         return owned;
     }
 

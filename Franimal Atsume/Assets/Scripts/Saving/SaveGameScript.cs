@@ -42,7 +42,6 @@ public static class SaveGameScript
 
     public static WorldData LoadGame()
     {
-        Debug.Log("hihi");
         string p = Application.persistentDataPath + path;
         if (File.Exists(p))
         {
@@ -54,18 +53,15 @@ public static class SaveGameScript
         }
         else
         {
-            Debug.Log("Error");
             return null;
         }
     }
 
     public static void DeleteData()
     {
-        Debug.Log("Deleting");
         string p = Application.persistentDataPath + path;
         if (File.Exists(p))
         {
-            Debug.Log("Deleted");
             File.Delete(p);
         }
     }

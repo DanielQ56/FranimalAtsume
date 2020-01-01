@@ -19,3 +19,4 @@ MonoBehaviour:
   attractedSpecies: 0
   placeableLocation: 0
   hasBeenPlaced: 0
+  isOwned: 0

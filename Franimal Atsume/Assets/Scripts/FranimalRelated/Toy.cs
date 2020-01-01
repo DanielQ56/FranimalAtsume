@@ -11,5 +11,12 @@ public class Toy : ScriptableObject
     public Sprite toySprite;
     public AnimalSpecies attractedSpecies;
     public AnimalLocation placeableLocation;
-    public bool hasBeenPlaced = false;
+    public bool hasBeenPlaced;
+    public bool isOwned;
+
+    private void OnEnable()
+    {
+        hasBeenPlaced = false;
+        isOwned = false;
+    }
 }

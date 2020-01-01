@@ -35,8 +35,7 @@ public class GManager : MonoBehaviour
 
     public void OpenStore()
     {
-        PauseGame();
-        store.OpenStore(unownedToys);
+        store.OpenStore(unownedToys, SeedCounter);
     }
 
     #endregion
@@ -66,7 +65,7 @@ public class GManager : MonoBehaviour
     public void AddToyToInventory(Toy t)
     {
         SeedCounter -= t.cost;
-        unownedToys.Remove(t);
+        t.isOwned = true;
         player.AddToy(t);
     }
 
@@ -89,10 +88,9 @@ public class GManager : MonoBehaviour
         WorldData data = SaveGameScript.LoadGame();
         if (data != null)
         {
-            Debug.Log("Not null?");
             SeedCounter = data.seeds;
             int counter = 0;
-            player.SetInventory(Utilities.instance.SeparateToys(data.toysOwned, out unownedToys));
+            player.SetInventory(Utilities.instance.SeparateToys(out unownedToys, data.toysOwned));
             foreach (Transform t in LocationParent.gameObject.transform)
             {
                 t.GetComponent<SpawnLocation>().Setup(player.GetToy(data.toys[counter]), Utilities.instance.GetFranimalByNameAndSpecies(data.franimals[counter]), System.DateTime.Parse(data.oldTime), data.timeRemaining[counter]);
@@ -101,10 +99,8 @@ public class GManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Here");
-            string[] names = { };
-            player.SetInventory(Utilities.instance.SeparateToys(names, out unownedToys));
-            SeedCounter = 100;
+            SeedCounter = 20;
+            player.SetInventory(Utilities.instance.SeparateToys(out unownedToys));
         }
     }
 
