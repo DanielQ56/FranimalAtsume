@@ -2223,6 +2223,9 @@ MonoBehaviour:
   location: 0
   activeFranimal: {fileID: 2147298692}
   currentFranimal: {fileID: 0}
+  getNewFranimalTimer: 0
+  getNewFranimalProbability: 0.1
+  franimalSpawnInterval: 10
   currentToy: {fileID: 0}
   activeToy: {fileID: 726022320}
 --- !u!212 &321534027
@@ -3725,6 +3728,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3740,6 +3744,19 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f611eede11ba5d418cb0cba08feef1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xdrag: 0.3
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -6605,6 +6622,9 @@ MonoBehaviour:
   location: 0
   activeFranimal: {fileID: 954147269}
   currentFranimal: {fileID: 0}
+  getNewFranimalTimer: 0
+  getNewFranimalProbability: 0.1
+  franimalSpawnInterval: 10
   currentToy: {fileID: 0}
   activeToy: {fileID: 1232494217}
 --- !u!212 &900456522
@@ -10072,6 +10092,9 @@ MonoBehaviour:
   location: 0
   activeFranimal: {fileID: 1964843272}
   currentFranimal: {fileID: 0}
+  getNewFranimalTimer: 0
+  getNewFranimalProbability: 0.1
+  franimalSpawnInterval: 10
   currentToy: {fileID: 0}
   activeToy: {fileID: 2107089161}
 --- !u!212 &1516232019
