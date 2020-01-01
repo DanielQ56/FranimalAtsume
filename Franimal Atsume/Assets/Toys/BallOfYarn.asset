@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: BallOfYarn
   m_EditorClassIdentifier: 
   toy: BallOfYarn
+  toyDescription: Big ball of yarn that is sure to captivate any feline.
+  cost: 20
   toySprite: {fileID: 21300000, guid: 7635ca1f15644ef469a7968ba71dd0a5, type: 3}
   attractedSpecies: 1
   placeableLocation: 0
+  hasBeenPlaced: 0

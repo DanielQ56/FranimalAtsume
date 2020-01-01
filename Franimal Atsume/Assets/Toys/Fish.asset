@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Fish
   m_EditorClassIdentifier: 
   toy: Fish
+  toyDescription: What cat doesn't love a chewable, tossable fish?
+  cost: 30
   toySprite: {fileID: 21300000, guid: aeb6f00e12f5cce4a9d6cd40e4c60439, type: 3}
   attractedSpecies: 1
   placeableLocation: 0
+  hasBeenPlaced: 0

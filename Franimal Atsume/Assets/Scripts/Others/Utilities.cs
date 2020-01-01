@@ -94,6 +94,34 @@ public class Utilities: MonoBehaviour
         }
     }
 
+    public List<Toy> SeparateToys(string[] names, out List<Toy> unownedToys)
+    {
+        List<Toy> owned = new List<Toy>();
+        List<Toy> unowned = new List<Toy>();
+        if (names.Length > 0)
+        {
+            List<string> toyNames = new List<string>();
+            toyNames.AddRange(names);
+            foreach (Toy t in toys)
+            {
+                if (toyNames.Contains(t.toy))
+                {
+                    owned.Add(t);
+                }
+                else
+                {
+                    unowned.Add(t);
+                }
+            }
+        }
+        else
+        {
+            unowned.AddRange(toys);
+        }
+        unownedToys = unowned;
+        return owned;
+    }
+
     public Toy GetToy(string name)
     {
         if (!string.IsNullOrEmpty(name))

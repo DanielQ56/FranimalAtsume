@@ -27,6 +27,7 @@ public class LocationInformation : MonoBehaviour
 
     public void UpdateToyAtLocation(Toy t)
     {
+        this.gameObject.SetActive(false);
         locationSelected.ChangeToy(t);
     }
 }

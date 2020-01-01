@@ -1,31 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 
-public class InventoryDisplay : MonoBehaviour
+public class StoreDisplay : MonoBehaviour
 {
-    [SerializeField] GameObject inventoryGrid;
+    [SerializeField] GameObject storeGrid;
     [SerializeField] Button prev;
     [SerializeField] Button next;
     [SerializeField] TextMeshProUGUI description;
+    [SerializeField] GameObject errorPanel;
 
     ToyInDisplay toy;
 
     int currentIndex = 0;
-    List<Toy> ownedToys;
-        
-    public void OpenInventory(List<Toy> oT)
+    List<Toy> unownedToys = new List<Toy>();
+
+    public void OpenStore(List<Toy> uT)
     {
         currentIndex = 0;
-        this.ownedToys = oT;
-        foreach(Transform t in inventoryGrid.transform)
+        unownedToys = uT;
+        foreach (Transform t in storeGrid.transform)
         {
-            if (currentIndex < ownedToys.Count + 1)
+            if (currentIndex < unownedToys.Count)
             {
                 t.gameObject.SetActive(true);
-                t.gameObject.GetComponent<ToyInDisplay>().SetInfo((currentIndex > 0 ? ownedToys[currentIndex - 1] : null));
+                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true);
             }
             else
             {
@@ -33,18 +34,18 @@ public class InventoryDisplay : MonoBehaviour
             }
             currentIndex += 1;
         }
-        next.interactable = (ownedToys.Count > 5);
+        next.interactable = (unownedToys.Count > 4);
         prev.interactable = false;
     }
 
     public void NextPage()
     {
-        foreach (Transform t in inventoryGrid.transform)
+        foreach (Transform t in storeGrid.transform)
         {
-            if (currentIndex < ownedToys.Count + 1)
+            if (currentIndex < unownedToys.Count)
             {
                 t.gameObject.SetActive(true);
-                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(ownedToys[currentIndex - 1]);
+                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true);
             }
             else
             {
@@ -52,19 +53,19 @@ public class InventoryDisplay : MonoBehaviour
             }
             currentIndex += 1;
         }
-        next.interactable = (currentIndex + 6 < ownedToys.Count + 1);
+        next.interactable = (currentIndex + 4 < unownedToys.Count);
         prev.interactable = true;
     }
 
     public void PrevPage()
     {
-        currentIndex -= 6;
-        foreach (Transform t in inventoryGrid.transform)
+        currentIndex -= 4;
+        foreach (Transform t in storeGrid.transform)
         {
-            if (currentIndex < ownedToys.Count + 1)
+            if (currentIndex < unownedToys.Count)
             {
                 t.gameObject.SetActive(true);
-                t.gameObject.GetComponent<ToyInDisplay>().SetInfo((currentIndex > 0 ? ownedToys[currentIndex - 1] : null));
+                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true );
             }
             else
             {
@@ -73,25 +74,30 @@ public class InventoryDisplay : MonoBehaviour
             currentIndex += 1;
         }
         next.interactable = true;
-        prev.interactable = (currentIndex - 6 >= 0);
+        prev.interactable = (currentIndex - 4 >= 0);
     }
 
     public void UpdateDescription(string desc, ToyInDisplay t)
     {
-        if(toy != null)
+        if (toy != null)
         {
             toy.Deselect();
         }
         toy = t;
         description.text = desc;
-        
+
     }
 
+    public void DisplayErrorMessage()
+    {
+        errorPanel.SetActive(true);
+    }
 
-    public void CloseInventory()
+    public void CloseStore()
     {
         currentIndex = 0;
-        this.gameObject.SetActive(false);
+        description.text = "";
         GManager.instance.PauseGame();
+        this.gameObject.SetActive(false);
     }
 }

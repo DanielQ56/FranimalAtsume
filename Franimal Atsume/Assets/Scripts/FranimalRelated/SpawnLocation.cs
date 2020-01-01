@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SpawnLocation : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public class SpawnLocation : MonoBehaviour
     public Franimal currentFranimal;
     float franimalTimeRemaining = 0;
     float getNewFranimalTimer = 0f;
-    float getNewFranimalProbability = 0.50f;
+    float getNewFranimalProbability = 1f;
     #endregion
 
     #region Startup and Pre-startup functions
+    bool paused = false;
+
     //called when loading up a save file 
     public void Setup(Toy toy, Franimal franimal, System.DateTime oldTime, float timeRemaining)
     {
@@ -23,6 +26,7 @@ public class SpawnLocation : MonoBehaviour
         if(currentToy != null)
         {
             activeToy.sprite = currentToy.toySprite;
+            currentToy.hasBeenPlaced = true;
         }
         if(currentFranimal != null)
         {
@@ -54,14 +58,25 @@ public class SpawnLocation : MonoBehaviour
         CheckForNewFranimal();
     }
 
+    public void PauseTimers()
+    {
+        paused = !paused;
+        Debug.Log(paused ? "Paused" : "Not Paused");
+    }
+
+
     #endregion
 
 
     #region Handles Clicking on a Location
-    private void OnMouseDown()
+
+    private void OnMouseUpAsButton()
     {
-        GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
-            (currentToy == null ? "None" : currentToy.name), (currentFranimal == null ? "None" : currentFranimal.name), this);
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
+                (currentToy == null ? "None" : currentToy.name), (currentFranimal == null ? "None" : currentFranimal.name), this);
+        }
     }
     #endregion
 
@@ -93,7 +108,7 @@ public class SpawnLocation : MonoBehaviour
     //decrement the timer/make franimal leave when its timer is done
     void DecrementCurrentFranimal()
     {
-        if (currentFranimal != null)
+        if (currentFranimal != null && !paused)
         {
             franimalTimeRemaining -= Time.deltaTime;
 
@@ -108,11 +123,11 @@ public class SpawnLocation : MonoBehaviour
     //uses probability to decide whether or not to spawn a new franimal at this SpawnLocation
     void CheckForNewFranimal()
     {
-        if (currentToy != null)
+        if (currentToy != null && !paused)
         {
-            Debug.Log("Can have new franimal");
             if (getNewFranimalTimer <= 0)
             {
+                Debug.Log("Here");
                 if (Random.value < getNewFranimalProbability)
                 {
                     AttractNewFranimal();
@@ -124,10 +139,6 @@ public class SpawnLocation : MonoBehaviour
             {
                 getNewFranimalTimer -= Time.deltaTime;
             }
-        }
-        else
-        {
-            Debug.Log("Cannot get new franimals");
         }
     }
 

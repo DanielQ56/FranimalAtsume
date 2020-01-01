@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: TireSwing
   m_EditorClassIdentifier: 
   toy: TireSwing
+  toyDescription: 'Le tire '
+  cost: 40
   toySprite: {fileID: 21300000, guid: 171e691f62dd545479e655c4477da736, type: 3}
   attractedSpecies: 0
   placeableLocation: 0
+  hasBeenPlaced: 0

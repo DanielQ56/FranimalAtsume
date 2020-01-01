@@ -23,15 +23,29 @@ public class GManager : MonoBehaviour
 
     private void Start()
     {
-        //SaveGameScript.DeleteData();
+        SaveGameScript.DeleteData();
         SetupDataFromSave();
     }
     #endregion
 
+    #region Shop
+    [SerializeField] StoreDisplay store;
+
+    List<Toy> unownedToys = new List<Toy>();
+
+    public void OpenStore()
+    {
+        PauseGame();
+        store.OpenStore(unownedToys);
+    }
+
+    #endregion
+
     #region Handles Player Inventory
     [SerializeField] TextMeshProUGUI seedText;
-    [SerializeField] PlayerInventory player;
     [SerializeField] InventoryDisplay inventory;
+
+    PlayerInventory player = new PlayerInventory();
 
     int SeedCounter
     {
@@ -51,6 +65,8 @@ public class GManager : MonoBehaviour
 
     public void AddToyToInventory(Toy t)
     {
+        SeedCounter -= t.cost;
+        unownedToys.Remove(t);
         player.AddToy(t);
     }
 
@@ -59,25 +75,36 @@ public class GManager : MonoBehaviour
         inventory.OpenInventory(player.GetOwnedToys());
     }
 
+    public bool CanPurchaseToy(Toy t)
+    {
+        return player.HasSufficientFunds(t.cost);
+    }
+
     #endregion
 
     #region Handles save data
     void SetupDataFromSave()
     {
+        Time.timeScale = 1;
         WorldData data = SaveGameScript.LoadGame();
         if (data != null)
         {
+            Debug.Log("Not null?");
             SeedCounter = data.seeds;
             int counter = 0;
-            foreach (Transform t in LocationParent.transform)
+            player.SetInventory(Utilities.instance.SeparateToys(data.toysOwned, out unownedToys));
+            foreach (Transform t in LocationParent.gameObject.transform)
             {
-                t.GetComponent<SpawnLocation>().Setup(Utilities.instance.GetToy(data.toys[counter]), Utilities.instance.GetFranimalByNameAndSpecies(data.franimals[counter]), System.DateTime.Parse(data.oldTime), data.timeRemaining[counter]);
+                t.GetComponent<SpawnLocation>().Setup(player.GetToy(data.toys[counter]), Utilities.instance.GetFranimalByNameAndSpecies(data.franimals[counter]), System.DateTime.Parse(data.oldTime), data.timeRemaining[counter]);
                 counter += 1;
             }
         }
         else
         {
-            SeedCounter = 0;
+            Debug.Log("Here");
+            string[] names = { };
+            player.SetInventory(Utilities.instance.SeparateToys(names, out unownedToys));
+            SeedCounter = 100;
         }
     }
 
@@ -87,14 +114,14 @@ public class GManager : MonoBehaviour
         List<string> franimal = new List<string>();
         List<float> timeRemaining = new List<float>();
         SpawnLocation sl;
-        foreach(Transform t in LocationParent.transform)
+        foreach(Transform t in LocationParent.gameObject.transform)
         {
             sl = t.GetComponent<SpawnLocation>();
             toys.Add(sl.GetToyName());
             franimal.Add(sl.GetFranimalInfo());
             timeRemaining.Add(sl.GetTimeRemaining());
         }
-        SaveGameScript.SaveGame(franimal, toys, System.DateTime.Now.ToString(), timeRemaining, SeedCounter);
+        SaveGameScript.SaveGame(franimal, toys, System.DateTime.Now.ToString(), timeRemaining, SeedCounter, player.GetNamesOfOwnedToys());
     }
 
 
@@ -107,13 +134,18 @@ public class GManager : MonoBehaviour
     #endregion
 
     #region Handles Location Functions
-    [SerializeField] GameObject LocationParent;
+    [SerializeField] SpawnParent LocationParent;
     [SerializeField] LocationInformation LocationPanel;
 
     public void LookAtLocation(Sprite toy, Sprite franimal, string toyN, string franN, SpawnLocation location)
     {
-        PauseGame();
         LocationPanel.LookAtInformation(toy, franimal, toyN, franN, location);
+        PauseGame();
+    }
+
+    public void ChangeToyAtLocation(Toy t)
+    {
+        LocationPanel.UpdateToyAtLocation(t);
     }
 
     
@@ -123,7 +155,7 @@ public class GManager : MonoBehaviour
     #region Utility Functions
     public void PauseGame()
     {
-        Time.timeScale = (Time.timeScale < 1 ? 1 : 0);
+        LocationParent.PauseSpawning();
     }
     #endregion
 }

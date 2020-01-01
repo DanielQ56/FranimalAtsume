@@ -6,6 +6,8 @@ using UnityEngine;
 public class Toy : ScriptableObject
 {
     public string toy;
+    public string toyDescription;
+    public int cost;
     public Sprite toySprite;
     public AnimalSpecies attractedSpecies;
     public AnimalLocation placeableLocation;
