@@ -26,6 +26,7 @@ public class Utilities: MonoBehaviour
     public List<Franimal> Primate = new List<Franimal>();
     public List<Franimal> Feline = new List<Franimal>();
     public List<Toy> toys = new List<Toy>();
+    public List<Toy> NewExpansions = new List<Toy>();
 
     private void Awake()
     {

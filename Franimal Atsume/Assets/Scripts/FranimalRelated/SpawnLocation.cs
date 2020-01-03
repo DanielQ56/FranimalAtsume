@@ -75,8 +75,11 @@ public class SpawnLocation : MonoBehaviour
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
+            if (GManager.instance.HasUnlockedExpansion(location))
+                GManager.instance.LookAtLocation((currentToy == null ? null : currentToy.toySprite), (currentFranimal == null ? null : currentFranimal.sprite),
                 (currentToy == null ? "None" : currentToy.name), (currentFranimal == null ? "None" : currentFranimal.name), this);
+            else
+                GManager.instance.HasNotUnlockedExpansion(location);
         }
     }
     #endregion

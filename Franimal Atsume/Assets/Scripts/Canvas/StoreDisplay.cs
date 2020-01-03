@@ -6,7 +6,10 @@ using UnityEngine.UI;
 
 public class StoreDisplay : MonoBehaviour
 {
-    [SerializeField] GameObject storeGrid;
+    [SerializeField] GameObject toyGrid;
+    [SerializeField] GameObject expansionGrid;
+
+    #region Shop-generic variables/Functions
     [SerializeField] Button prev;
     [SerializeField] Button next;
     [SerializeField] TextMeshProUGUI description;
@@ -17,34 +20,11 @@ public class StoreDisplay : MonoBehaviour
     ToyInDisplay toy;
 
     int currentIndex = 0;
-    List<Toy> unownedToys = new List<Toy>();
 
-    public void OpenStore(List<Toy> uT, int seeds)
-    {
-        currentIndex = 0;
-        unownedToys = uT;
-        foreach (Transform t in storeGrid.transform)
-        {
-            if (currentIndex < unownedToys.Count)
-            {
-                t.gameObject.SetActive(true);
-                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true);
-            }
-            else
-            {
-                t.gameObject.SetActive(false);
-            }
-            currentIndex += 1;
-        }
-        next.interactable = (unownedToys.Count > 4);
-        prev.interactable = false;
-        seedsOwned.text = string.Format("Seeds: {0}", seeds);
-        description.text = "";
-    }
 
     public void NextPage()
     {
-        foreach (Transform t in storeGrid.transform)
+        foreach (Transform t in toyGrid.transform)
         {
             if (currentIndex < unownedToys.Count)
             {
@@ -64,12 +44,12 @@ public class StoreDisplay : MonoBehaviour
     public void PrevPage()
     {
         currentIndex -= 4;
-        foreach (Transform t in storeGrid.transform)
+        foreach (Transform t in toyGrid.transform)
         {
             if (currentIndex < unownedToys.Count)
             {
                 t.gameObject.SetActive(true);
-                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true );
+                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true);
             }
             else
             {
@@ -79,17 +59,6 @@ public class StoreDisplay : MonoBehaviour
         }
         next.interactable = true;
         prev.interactable = (currentIndex - 4 >= 0);
-    }
-
-    public void UpdateDescription(string desc, ToyInDisplay t)
-    {
-        if (toy != null)
-        {
-            toy.Deselect();
-        }
-        toy = t;
-        description.text = desc;
-
     }
 
     public void DisplayErrorMessage()
@@ -109,4 +78,76 @@ public class StoreDisplay : MonoBehaviour
         GManager.instance.PauseGame();
         this.gameObject.SetActive(false);
     }
+
+
+    #endregion
+
+    List<Toy> unownedToys = new List<Toy>();
+
+    public void OpenStore(List<Toy> uT, int seeds, List<Toy> expansions)
+    {
+        SetupToys(uT);
+        SetupExpansions(expansions);
+        ViewToys();
+        seedsOwned.text = string.Format("Seeds: {0}", seeds); 
+        description.text = "";
+    }
+
+    public void SetupToys(List<Toy> uT)
+    {
+        currentIndex = 0;
+        unownedToys = uT;
+        foreach (Transform t in toyGrid.transform)
+        {
+            if (currentIndex < unownedToys.Count)
+            {
+                t.gameObject.SetActive(true);
+                t.gameObject.GetComponent<ToyInDisplay>().SetInfo(unownedToys[currentIndex], true);
+            }
+            else
+            {
+                t.gameObject.SetActive(false);
+            }
+            currentIndex += 1;
+        }
+        next.interactable = (unownedToys.Count > 4);
+        prev.interactable = false;
+    }
+
+    public void SetupExpansions(List<Toy> exp)
+    {
+        int counter = 0;
+        foreach(Transform t in expansionGrid.transform)
+        {
+            t.gameObject.GetComponent<ToyInDisplay>().SetInfo(exp[counter], true);
+            counter += 1;
+        }
+    }
+
+    public void ViewToys()
+    {
+        expansionGrid.transform.parent.SetAsFirstSibling();
+        next.interactable = (currentIndex + 4 < unownedToys.Count);
+        prev.interactable = (currentIndex - 8 >= 0);
+    }
+
+    public void ViewExpansion()
+    {
+        toyGrid.transform.SetAsFirstSibling();
+        next.interactable = false;
+        prev.interactable = false;
+    }
+
+
+    public void UpdateDescription(string desc, ToyInDisplay t)
+    {
+        if (toy != null)
+        {
+            toy.Deselect();
+        }
+        toy = t;
+        description.text = desc;
+
+    }
+
 }

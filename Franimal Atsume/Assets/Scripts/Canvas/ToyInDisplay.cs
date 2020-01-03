@@ -82,7 +82,7 @@ public class ToyInDisplay: MonoBehaviour
             {
                 if(GManager.instance.CanPurchaseToy(toy))
                 {
-                    GManager.instance.AddToyToInventory(toy);
+                    GManager.instance.AddToyToInventory(toy, toy.attractedSpecies == AnimalSpecies.None);
                     storeDisplay.DisplaySuccessPanel();
                 }
                 else
